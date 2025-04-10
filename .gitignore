@@ -1,0 +1,4 @@
+node_modules/
+dist/
+.env
+src/dashboard/src/page/Dashboard.tsx
