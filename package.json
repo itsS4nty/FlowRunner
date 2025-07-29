@@ -1,6 +1,6 @@
 {
     "name": "@itss4nty/flowrunner",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "A powerful task runner with dependency management, retry mechanisms, and real-time dashboard monitoring",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
@@ -85,12 +85,12 @@
     "license": "MIT",
     "repository": {
         "type": "git",
-        "url": "https://github.com/yourusername/flowrunner.git"
+        "url": "https://github.com/itsS4nty/FlowRunner.git"
     },
     "bugs": {
-        "url": "https://github.com/yourusername/flowrunner/issues"
+        "url": "https://github.com/itsS4nty/FlowRunner/issues"
     },
-    "homepage": "https://github.com/yourusername/flowrunner#readme",
+    "homepage": "https://github.com/itsS4nty/FlowRunner#readme",
     "workspaces": [
         "src/*"
     ]
