@@ -1,0 +1,44 @@
+# Source files
+src/
+tests/
+*.test.ts
+*.test.js
+
+# Config files
+.eslintrc.*
+.prettierrc.*
+tsconfig.json
+jest.config.*
+nodemon.json
+
+# Development files
+.env
+.env.*
+
+# Build artifacts (keep only dist)
+node_modules/
+coverage/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor directories and files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Keep these for users
+!dist/
+!README.md
+!LICENSE
+!package.json

@@ -14,20 +14,20 @@ const DEFAULT_CONFIG: CONFIG = {
     backoff: 1000,
 };
 
-export class TaskRunner {
+export class FlowRunner {
     private scheduler: TaskScheduler;
     private state: TaskStateManager;
     private isStarted = false;
     private io: DashboardGateway;
 
-    constructor(_config?: Partial<CONFIG>) {
+    constructor(_config?: Partial<CONFIG>, dashboardPort?: number) {
         const config: CONFIG = { ...DEFAULT_CONFIG, ..._config };
         this.io = new DashboardGateway(() => ({
             allTasks: this.getAllTasks(),
             stats: this.getStats(),
-        }));
+        }), dashboardPort);
         this.io.registerHandler('task:retry', (taskId: string) => {
-            this.reRunTask(taskId);
+            this._reRunTask(taskId);
         });
         this.state = new TaskStateManager();
         this.scheduler = new TaskScheduler({
@@ -62,7 +62,7 @@ export class TaskRunner {
         });
     }
 
-    sendDataThroughSocket() {
+    private sendDataThroughSocket() {
         this.io.sendData('tasks:all', this.getAllTasks());
         this.io.sendData('tasks:data', this.getStats());
     }
@@ -79,15 +79,15 @@ export class TaskRunner {
         return this.state.getStats();
     }
 
-    getDetailedStats() {
-        return this.state.getDetailedStats();
-    }
-
     getAllTasks() {
         return this.state.getAllTasks();
     }
 
-    reRunTask(taskId: string, force = false) {
+    public reRunTask(taskId: string) {
+        this._reRunTask(taskId, false);
+    }
+
+    private _reRunTask(taskId: string, force = false) {
         const task = this.state.getTaskById(taskId);
         if (!task) throw new Error(`Task with ID ${taskId} not found`);
 
@@ -104,7 +104,7 @@ export class TaskRunner {
 
         const dependents = this.state.getDependents(taskId);
         for (const dependent of dependents) {
-            this.reRunTask(dependent.getId(), true);
+            this._reRunTask(dependent.getId(), true);
         }
     }
 
@@ -112,5 +112,9 @@ export class TaskRunner {
         if (this.isStarted) return;
         this.isStarted = true;
         this.scheduler.trySchedule();
+    }
+
+    close() {
+        this.io.close();
     }
 }

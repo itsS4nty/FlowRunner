@@ -1,9 +1,13 @@
+export { FlowRunner } from './core/FlowRunner';
+export { Task } from './core/Task';
+
+// Demo usage (can be removed in production)
 import { Task } from './core/Task';
-import { TaskRunner } from './core/TaskRunner';
+import { FlowRunner } from './core/FlowRunner';
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-const runner = new TaskRunner({ concurrency: 2, maxTries: 2, backoff: 1000 });
+const runner = new FlowRunner({ concurrency: 2, maxTries: 2, backoff: 1000 });
 
 const task1Fn = async () => {
     console.log('Task 1 started');

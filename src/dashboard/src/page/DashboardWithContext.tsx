@@ -4,14 +4,14 @@ import DashboardHeader from '../components/DashboardHeader';
 import DashboardControls from '../components/DashboardControls';
 import DashboardContent from '../components/DashboardContent';
 import { 
-    useTaskSocket, 
-    useDashboardFilters, 
-    useTaskSelection 
-} from '../hooks';
+    DashboardProvider, 
+    useDashboardSocket, 
+    useDashboardFiltersContext, 
+    useDashboardSelection 
+} from '../context';
 
-export default function Dashboard() {
-    // Custom hooks for state management
-    const { stats, tasks, isConnected } = useTaskSocket();
+function DashboardInner() {
+    const { stats, tasks, isConnected } = useDashboardSocket();
     const {
         filterStatus,
         filterTags,
@@ -21,15 +21,14 @@ export default function Dashboard() {
         setSearchTerm,
         updateFilter,
         clearFilters,
-    } = useDashboardFilters();
+    } = useDashboardFiltersContext();
     const {
         selectedTask,
         hoveredTaskId,
         setSelectedTask,
         setHoveredTaskId,
-    } = useTaskSelection();
+    } = useDashboardSelection();
 
-    // Memoized computed values
     const hasActiveFilters = useMemo(() => {
         return filterStatus !== null || filterTags.length > 0 || searchTerm.trim() !== '';
     }, [filterStatus, filterTags, searchTerm]);
@@ -68,4 +67,10 @@ export default function Dashboard() {
     );
 }
 
-// Export socket if needed elsewhere
+export default function DashboardWithContext() {
+    return (
+        <DashboardProvider>
+            <DashboardInner />
+        </DashboardProvider>
+    );
+}

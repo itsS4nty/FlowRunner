@@ -1,5 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Server as SocketIOServer, Socket } from 'socket.io';
+import Koa from 'koa';
+import serve from 'koa-static';
+import { createServer } from 'http';
+import path from 'path';
 
 type EVENTS = 'tasks:data' | 'tasks:all';
 
@@ -16,10 +20,31 @@ type DashboardPayload = {
 
 export class DashboardGateway {
     private io: SocketIOServer;
+    private app: Koa;
+    private server: any;
     private handlers = new Map<FRONTEND_EVENTS, EventHandler<any>>();
 
-    constructor(handlerOnConnection: () => DashboardPayload) {
-        this.io = new SocketIOServer(3030, {
+    constructor(handlerOnConnection: () => DashboardPayload, port = 3030) {
+        // Setup Koa app to serve dashboard assets
+        this.app = new Koa();
+
+        // Try to serve dashboard assets if they exist
+        try {
+            const dashboardPath = path.resolve(__dirname, '..', 'dashboard');
+
+            this.app.use(serve(dashboardPath));
+            console.log(`[Dashboard] Serving dashboard assets from: ${dashboardPath}`);
+        } catch (error) {
+            console.warn(
+                '[Dashboard] Dashboard assets not found, dashboard UI will not be available',
+            );
+        }
+
+        // Create HTTP server
+        this.server = createServer(this.app.callback());
+
+        // Setup Socket.IO
+        this.io = new SocketIOServer(this.server, {
             cors: { origin: '*' },
         });
 
@@ -40,6 +65,10 @@ export class DashboardGateway {
                 console.log(`[Dashboard] Client disconnected: ${socket.id}`);
             });
         });
+
+        this.server.listen(port, () => {
+            console.log(`[Dashboard] Server running on http://localhost:${port}`);
+        });
     }
 
     sendData<T = unknown>(event: EVENTS, data: T) {
@@ -52,5 +81,14 @@ export class DashboardGateway {
 
     registerHandler<K extends FRONTEND_EVENTS>(event: K, handler: EventHandler<K>) {
         this.handlers.set(event, handler as any);
+    }
+
+    close() {
+        if (this.server) {
+            this.server.close();
+        }
+        if (this.io) {
+            this.io.close();
+        }
     }
 }

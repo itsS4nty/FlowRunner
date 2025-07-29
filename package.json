@@ -1,19 +1,30 @@
 {
-    "name": "koa-server-scaffold",
+    "name": "@itss4nty/flowrunner",
     "version": "1.0.0",
-    "description": "",
-    "main": "index.js",
+    "description": "A powerful task runner with dependency management, retry mechanisms, and real-time dashboard monitoring",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "files": [
+        "dist/**/*",
+        "README.md",
+        "LICENSE"
+    ],
     "scripts": {
         "start:dev": "nodemon src/index.ts",
         "start": "ts-node src/index.ts",
-        "build": "tsc && tsc-alias",
+        "build": "npm run build:dashboard && tsc && tsc-alias",
+        "build:dashboard": "cd src/dashboard && npm run build && mkdir -p ../../dist/dashboard && cp -r dist/* ../../dist/dashboard/",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
         "prettier": "prettier . --check",
         "prettier:fix": "prettier . --write",
         "test": "jest --detectOpenHandles",
+        "test:watch": "jest --watch --detectOpenHandles",
+        "test:coverage": "jest --coverage --detectOpenHandles",
+        "test:ci": "jest --ci --coverage --watchAll=false --detectOpenHandles",
         "start:dashboard": "npm start --workspace dashboard",
-        "install:dashboard": "npm install --workspace dashboard"
+        "install:dashboard": "npm install --workspace dashboard",
+        "prepublishOnly": "npm run test && npm run build"
     },
     "dependencies": {
         "@koa/router": "^12.0.1",
@@ -57,9 +68,29 @@
         "tsc-alias": "^1.8.8",
         "typescript": "^5.4.3"
     },
-    "keywords": [],
-    "author": "",
-    "license": "ISC",
+    "keywords": [
+        "task-runner",
+        "workflow",
+        "job-queue",
+        "scheduler",
+        "dependency-management",
+        "retry-logic",
+        "dashboard",
+        "monitoring",
+        "typescript",
+        "concurrency",
+        "flowrunner"
+    ],
+    "author": "Your Name <your.email@example.com>",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/yourusername/flowrunner.git"
+    },
+    "bugs": {
+        "url": "https://github.com/yourusername/flowrunner/issues"
+    },
+    "homepage": "https://github.com/yourusername/flowrunner#readme",
     "workspaces": [
         "src/*"
     ]
