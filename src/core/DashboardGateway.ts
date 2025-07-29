@@ -24,7 +24,7 @@ export class DashboardGateway {
     private server: any;
     private handlers = new Map<FRONTEND_EVENTS, EventHandler<any>>();
 
-    constructor(handlerOnConnection: () => DashboardPayload, port = 3030) {
+    constructor(handlerOnConnection: () => DashboardPayload, port = 3001) {
         // Setup Koa app to serve dashboard assets
         this.app = new Koa();
 
@@ -69,6 +69,18 @@ export class DashboardGateway {
         this.server.listen(port, () => {
             console.log(`[Dashboard] Server running on http://localhost:${port}`);
         });
+
+        if (this.server && typeof this.server.on === 'function') {
+            this.server.on('error', (err: any) => {
+                if (err.code === 'EADDRINUSE') {
+                    console.error(`[Dashboard] Port ${port} is already in use. Please use a different port or stop the service using port ${port}.`);
+                    console.error(`[Dashboard] You can specify a different port: new FlowRunner({ dashboardPort: ${port + 1} })`);
+                } else {
+                    console.error('[Dashboard] Server error:', err);
+                }
+                throw err;
+            });
+        }
     }
 
     sendData<T = unknown>(event: EVENTS, data: T) {

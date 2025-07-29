@@ -1,6 +1,6 @@
 {
     "name": "@itss4nty/flowrunner",
-    "version": "1.0.1",
+    "version": "1.0.3",
     "description": "A powerful task runner with dependency management, retry mechanisms, and real-time dashboard monitoring",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",

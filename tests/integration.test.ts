@@ -19,7 +19,7 @@ describe('Integration Tests', () => {
 
     beforeEach(() => {
         port = 4000 + Math.floor(Math.random() * 1000); // Random port to avoid conflicts
-        flowRunner = new FlowRunner({ concurrency: 2, maxTries: 2, backoff: 50 }, port);
+        flowRunner = new FlowRunner({ concurrency: 2, maxTries: 2, backoff: 50, dashboardPort: port });
     });
 
     afterEach(() => {

@@ -26,7 +26,7 @@ A powerful task runner with dependency management, retry mechanisms, and real-ti
 ## Installation
 
 ```bash
-npm install flowrunner
+npm install @itss4nty/flowrunner
 ```
 
 ## Quick Start
@@ -73,6 +73,7 @@ Creates a new FlowRunner instance with optional configuration.
 - `concurrency`: Maximum number of tasks to run simultaneously (default: `1`)
 - `maxTries`: Maximum retry attempts per task (default: `3`)
 - `backoff`: Delay in milliseconds before retrying failed tasks (default: `1000`)
+- `dashboardPort`: Port for the web dashboard server (default: `3001`)
 
 <hr />
 
@@ -192,11 +193,11 @@ FlowRunner includes a real-time web dashboard for monitoring task execution. The
 - **Error Details**: Stack traces and error information for failed tasks
 - **Search and Filtering**: Filter tasks by status, tags, or search terms
 
-The dashboard is automatically available at `http://localhost:3030` when you create a FlowRunner instance. You can customize the port:
+The dashboard is automatically available at `http://localhost:3001` when you create a FlowRunner instance. You can customize the port:
 
 ```typescript
 // Custom dashboard port
-const runner = new FlowRunner({ concurrency: 2 }, 4000); // Dashboard on port 4000
+const runner = new FlowRunner({ concurrency: 2, dashboardPort: 4000 }); // Dashboard on port 4000
 runner.start();
 ```
 

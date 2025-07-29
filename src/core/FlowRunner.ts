@@ -7,11 +7,13 @@ type CONFIG = {
     concurrency: number;
     maxTries: number;
     backoff: number;
+    dashboardPort: number;
 };
 const DEFAULT_CONFIG: CONFIG = {
     concurrency: 1,
     maxTries: 3,
     backoff: 1000,
+    dashboardPort: 3001,
 };
 
 export class FlowRunner {
@@ -20,12 +22,12 @@ export class FlowRunner {
     private isStarted = false;
     private io: DashboardGateway;
 
-    constructor(_config?: Partial<CONFIG>, dashboardPort?: number) {
+    constructor(_config?: Partial<CONFIG>) {
         const config: CONFIG = { ...DEFAULT_CONFIG, ..._config };
         this.io = new DashboardGateway(() => ({
             allTasks: this.getAllTasks(),
             stats: this.getStats(),
-        }), dashboardPort);
+        }), config.dashboardPort);
         this.io.registerHandler('task:retry', (taskId: string) => {
             this._reRunTask(taskId);
         });

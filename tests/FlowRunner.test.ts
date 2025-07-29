@@ -18,7 +18,7 @@ describe('FlowRunner', () => {
 
     beforeEach(() => {
         port = 3000 + Math.floor(Math.random() * 1000); // Random port to avoid conflicts
-        flowRunner = new FlowRunner({ concurrency: 2, maxTries: 2, backoff: 100 }, port);
+        flowRunner = new FlowRunner({ concurrency: 2, maxTries: 2, backoff: 100, dashboardPort: port });
     });
 
     afterEach(() => {
@@ -28,7 +28,7 @@ describe('FlowRunner', () => {
 
     describe('initialization', () => {
         it('should create a flowrunner with default config', () => {
-            const defaultFlowRunner = new FlowRunner(undefined, port + 1);
+            const defaultFlowRunner = new FlowRunner({ dashboardPort: port + 1 });
             expect(defaultFlowRunner).toBeInstanceOf(FlowRunner);
             defaultFlowRunner.close();
         });
@@ -38,7 +38,8 @@ describe('FlowRunner', () => {
                 concurrency: 5,
                 maxTries: 5,
                 backoff: 2000,
-            }, port + 2);
+                dashboardPort: port + 2,
+            });
             expect(customFlowRunner).toBeInstanceOf(FlowRunner);
             customFlowRunner.close();
         });
