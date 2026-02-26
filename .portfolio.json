@@ -1,0 +1,34 @@
+{
+  "overview": "Task runner I built in TypeScript to handle async workflows with dependency chains, concurrency limits, and automatic retries. It ships with a React dashboard that connects over WebSockets so you can watch tasks run and retry failures in real time. Available on npm as @itss4nty/flowrunner.",
+  "metrics": [
+    "Configurable concurrency slots",
+    "Retry with exponential backoff",
+    "80%+ coverage enforced",
+    "Live WebSocket dashboard",
+    "5 task lifecycle states",
+    "npm published"
+  ],
+  "additionalTechStack": ["Koa", "Socket.IO", "React", "Tailwind CSS", "Vite", "Jest", "Zod"],
+  "challenges": [
+    "Scheduling tasks respecting dependency order",
+    "Cascading skips when a parent fails",
+    "Managing concurrent execution slots",
+    "Keeping the dashboard in sync over sockets",
+    "Shipping a React app inside an npm package"
+  ],
+  "features": [
+    "Dependency chaining: tasks declare a prevId so they wait for their parent to finish before running",
+    "Concurrency control: cap how many tasks run at once with a single config value",
+    "Retry with backoff: failed tasks get re-queued up to maxTries with a configurable delay between attempts",
+    "Cascade skip: if a task burns through all retries, every task downstream of it gets skipped automatically",
+    "Built-in dashboard: a React + Tailwind UI served by Koa shows live stats, a task table, search, and tag filtering",
+    "Retry from the browser: click a failed task in the dashboard and it re-runs along with its dependents",
+    "Programmatic API: call getStats(), getAllTasks(), or reRunTask() to integrate with your own tooling"
+  ],
+  "architecture": {
+    "system": "Four core classes + an embedded React dashboard",
+    "details": "FlowRunner is the entry point: it wires up TaskScheduler, TaskStateManager, and DashboardGateway. Adding a task registers it in the state manager and enqueues it in the scheduler. The scheduler checks if there's a free concurrency slot and whether the task's dependency has completed before firing it off. If a task fails it gets retried with backoff; if it runs out of attempts the scheduler walks the dependency graph and skips everything downstream. Every state change pushes events through DashboardGateway, which is a Koa server hosting the React dashboard plus a Socket.IO layer for live updates. The dashboard can also send a retry event back, which triggers _reRunTask and recursively re-queues the whole dependent chain."
+  },
+  "source": "https://github.com/itsS4nty/task-runner",
+  "live": ""
+}
